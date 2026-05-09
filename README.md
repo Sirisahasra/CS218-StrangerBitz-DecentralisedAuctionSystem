@@ -1,4 +1,4 @@
-# BlockBid – Decentralized Auction System
+<img width="560" height="380" alt="image" src="https://github.com/user-attachments/assets/dd7ee8f5-8445-4a22-a4a4-277754da8e67" /># BlockBid – Decentralized Auction System
 
 **Project Number:** _Project 5_
 
@@ -60,24 +60,29 @@ To develop a secure and transparent decentralized auction platform where users c
 ## **Repository Structure**
 
 ```text
-Auctra/
+BlockBid/
 ├── contracts/
-│   └── Auction.sol
+│   ├── Auction.sol
+│   ├── AuctionBeforeOptimisation.sol
+│   └── ReentrancyAttacker.sol
+├── frontend/
+│   └── auction-project-main/
+│       ├── client/
+│       ├── public/
+│       ├── server/
+│       ├── shared/
+│       ├── reports/
+│       ├── package.json
+│       ├── vite.config.ts
+│       └── tailwind.config.ts
+├── reports/
+│   ├── coverage-report.pdf
+│   └── gas-report.pdf
 ├── test/
 │   └── Auction.test.js
-├── frontend/
-│   ├── src/
-│   ├── public/
-│   └── package.json
-├── scripts/
-│   └── deploy.js
-├── reports/
-│   ├── gas-report.txt
-│   ├── coverage-report.txt
-│   └── gas-optimization.txt
+├── README.md
 ├── hardhat.config.js
-├── package.json
-└── README.md
+└── package.json
 ```
 
 ---
@@ -108,38 +113,59 @@ Returns refundable balance for a specific user.
 
 ---
 
-## **On-chain vs Off-chain Design**
+# On-chain vs Off-chain Design
 
-### **Stored On-chain**
+## Stored On-chain
+The following data is stored directly on the Ethereum blockchain because it is required for smart contract execution and auction logic:
 
-- Seller wallet address  
-- Highest bidder address  
-- Highest bid amount  
-- Auction deadline
-- Auction Status
-- Auction ended status  
-- IPFS CID  
+- Auction count
+- Seller wallet address
+- Highest bidder address
+- Highest bid amount (wei)
+- Starting price
+- Auction deadline timestamp
+- Auction ended status
+- Pending returns mapping (refund balances)
+- IPFS CID reference
 
-### **Stored Off-chain (IPFS)**
+## Stored Off-chain (IPFS)
+The following data is stored off-chain using IPFS to reduce gas costs and improve scalability:
 
-- Product image  
-- Product description  
-- Metadata JSON  
+- Product image
+- Product description
+- Auction metadata JSON
+- Item condition details
 
-### **Reason**
+## Reason for Off-chain Storage
+Blockchain storage is expensive, permanent, and publicly visible. Large files such as images and descriptive metadata significantly increase gas costs if stored on-chain.
 
-Blockchain storage is expensive and permanent. Large files are stored on IPFS, and only the CID is stored on-chain.
+To optimize efficiency, the project stores only the IPFS CID on-chain while keeping large auction metadata files on IPFS through Pinata.
 
----
+## Privacy & GDPR Considerations
+The project does not store:
+- Seller personal information
+- Bidder names
+- Phone numbers
+- Emails
+- Payment details
+- Shipping addresses
+
+Bidder wallet addresses and bid amounts remain publicly visible on-chain as part of Ethereum transaction transparency.
 
 ## **Security Measures**
 
 - OpenZeppelin `ReentrancyGuard`
-- `nonReentrant` modifier
+- `nonReentrant` modifier on sensitive functions
+- Withdrawal pattern using `pendingReturns`
 - Checks-Effects-Interactions pattern
 - Seller cannot self-bid
 - Double withdrawal prevention
 - Double auction ending prevention
+- Input validation using `require()` statements
+- Invalid auction ID protection
+- Prevention of bids after auction expiry
+- Permissionless auction ending after deadline
+- No personal user data stored on-chain
 
 ---
 
