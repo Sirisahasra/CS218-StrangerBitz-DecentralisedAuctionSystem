@@ -308,11 +308,7 @@ npx hardhat test
 npx hardhat coverage
 ```
 
-## Generate Gas Report
 
-```bash
-REPORT_GAS=true npx hardhat test
-```
 
 ## Deploy to Sepolia Testnet
 
