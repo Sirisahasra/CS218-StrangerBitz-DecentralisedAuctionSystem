@@ -278,12 +278,13 @@ Line Coverage Achieved: **>= 70%**
 
 ## Prerequisites
 
-Install:
-- Node.js
-- npm
+Install the following before getting started:
+- [Node.js](https://nodejs.org/) (v18 or above recommended)
+- npm (comes with Node.js)
 - Git
-- MetaMask Browser Extension
-
+- [Hardhat](https://hardhat.org/) – Ethereum development environment (`npm install --save-dev hardhat`)
+- [MetaMask](https://metamask.io/) Browser Extension
+- A funded Sepolia testnet wallet (for deployment)
 ## Install Dependencies
 
 ```bash
