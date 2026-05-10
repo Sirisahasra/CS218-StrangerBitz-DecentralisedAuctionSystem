@@ -27,6 +27,11 @@ BlockBid is a blockchain-based decentralized auction platform built on Ethereum.
 To develop a secure, transparent, and decentralized auction platform where users can create auctions and place bids directly through Ethereum smart contracts without intermediaries.
 
 ---
+## Demo Video
+
+[Watch Demo Video](https://github.com/user-attachments/assets/5425082a-4115-4961-acba-f9677c46901a)
+
+---
 
 # Key Features
 
