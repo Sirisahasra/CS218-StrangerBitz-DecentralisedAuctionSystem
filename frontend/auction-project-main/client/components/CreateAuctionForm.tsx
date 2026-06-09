@@ -6,7 +6,17 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Plus, Loader2 } from "lucide-react";
+import {
+  Plus,
+  Loader2,
+  ImagePlus,
+  UploadCloud,
+  Coins,
+  Timer,
+  FileText,
+  BadgeCheck,
+  X,
+} from "lucide-react";
 
 interface CreateAuctionFormProps {
   onAuctionCreated?: (auctionId: number) => Promise<void>;
@@ -142,6 +152,13 @@ export const CreateAuctionForm = ({
     setImagePreview("");
   };
 
+  const setQuickDuration = (minutes: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      durationMinutes: minutes,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -225,151 +242,260 @@ export const CreateAuctionForm = ({
       {!isOpen ? (
         <Button
           onClick={() => setIsOpen(true)}
-          className="gap-2 bg-gradient-to-r from-secondary to-accent hover:opacity-90"
+          className="gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 px-5 py-6 text-base font-semibold shadow-lg hover:opacity-90"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-5 h-5" />
           Create Auction
         </Button>
       ) : (
-        <Card className="p-6 border-border/50 bg-card">
-          <h3 className="text-lg font-semibold mb-4 text-foreground">
-            Create New Auction
-          </h3>
+        <Card className="relative overflow-hidden border-border/60 bg-card shadow-xl">
+          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600" />
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="itemName" className="text-sm font-medium">
-                Item Name
-              </Label>
-
-              <Input
-                id="itemName"
-                name="itemName"
-                placeholder="e.g., Vintage Painting"
-                value={formData.itemName}
-                onChange={handleChange}
-                disabled={isLoading}
-                className="bg-muted/50 border-border"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description" className="text-sm font-medium">
-                Description
-              </Label>
-
-              <textarea
-                id="description"
-                name="description"
-                placeholder="Describe item quality, features, condition, etc."
-                value={formData.description}
-                onChange={handleChange}
-                disabled={isLoading}
-                className="w-full min-h-24 rounded-md border border-border bg-muted/50 px-3 py-2 text-sm outline-none"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="condition" className="text-sm font-medium">
-                Condition
-              </Label>
-
-              <Input
-                id="condition"
-                name="condition"
-                placeholder="e.g., New, Used, Excellent"
-                value={formData.condition}
-                onChange={handleChange}
-                disabled={isLoading}
-                className="bg-muted/50 border-border"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="image" className="text-sm font-medium">
-                Item Image
-              </Label>
-
-              <Input
-                id="image"
-                type="file"
-                accept="image/png,image/jpeg,image/jpg,image/webp"
-                onChange={handleImageChange}
-                disabled={isLoading}
-                className="bg-muted/50 border-border"
-              />
-
-              {imagePreview && (
-                <div className="mt-2 h-40 rounded-lg overflow-hidden border border-border/50 bg-muted/30">
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    className="w-full h-full object-cover"
-                  />
+          <div className="p-6">
+            <div className="flex items-start justify-between gap-4 mb-6">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full border bg-muted/40 px-3 py-1 text-xs text-muted-foreground mb-3">
+                  <UploadCloud className="w-3.5 h-3.5" />
+                  IPFS + Smart Contract
                 </div>
-              )}
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="startingPrice" className="text-sm font-medium">
-                Starting Price (ETH)
-              </Label>
+                <h3 className="text-2xl font-bold text-foreground">
+                  Create New Auction
+                </h3>
 
-              <Input
-                id="startingPrice"
-                name="startingPrice"
-                type="number"
-                step="0.0001"
-                placeholder="0.1"
-                value={formData.startingPrice}
-                onChange={handleChange}
-                disabled={isLoading}
-                className="bg-muted/50 border-border"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="durationMinutes" className="text-sm font-medium">
-                Duration (Minutes)
-              </Label>
-
-              <Input
-                id="durationMinutes"
-                name="durationMinutes"
-                type="number"
-                min="1"
-                placeholder="1"
-                value={formData.durationMinutes}
-                onChange={handleChange}
-                disabled={isLoading}
-                className="bg-muted/50 border-border"
-              />
-            </div>
-
-            <div className="flex gap-2 pt-4">
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="flex-1 gap-2 bg-gradient-to-r from-secondary to-accent hover:opacity-90"
-              >
-                {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-                {isLoading ? "Creating..." : "Create Auction"}
-              </Button>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Upload item details, store metadata on IPFS, and publish your
+                  auction on-chain.
+                </p>
+              </div>
 
               <Button
                 type="button"
-                variant="outline"
+                variant="ghost"
+                size="sm"
                 onClick={() => {
                   setIsOpen(false);
                   resetForm();
                 }}
                 disabled={isLoading}
-                className="flex-1"
+                className="rounded-full"
               >
-                Cancel
+                <X className="w-4 h-4" />
               </Button>
             </div>
-          </form>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid lg:grid-cols-5 gap-6">
+                <div className="lg:col-span-2">
+                  <Label className="text-sm font-semibold flex items-center gap-2 mb-2">
+                    <ImagePlus className="w-4 h-4 text-primary" />
+                    Item Image
+                  </Label>
+
+                  <label className="group relative flex h-80 cursor-pointer items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-border bg-muted/30 transition hover:border-primary/70 hover:bg-muted/50">
+                    {imagePreview ? (
+                      <>
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="h-full w-full object-cover transition group-hover:scale-105"
+                        />
+
+                        <div className="absolute inset-0 bg-black/40 opacity-0 transition group-hover:opacity-100 flex items-center justify-center text-white font-semibold">
+                          Change Image
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-center px-6">
+                        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+                          <ImagePlus className="h-7 w-7 text-primary" />
+                        </div>
+
+                        <p className="font-semibold text-foreground">
+                          Upload item image
+                        </p>
+
+                        <p className="text-xs text-muted-foreground mt-2">
+                          PNG, JPG, JPEG or WEBP up to 10MB
+                        </p>
+                      </div>
+                    )}
+
+                    <Input
+                      id="image"
+                      type="file"
+                      accept="image/png,image/jpeg,image/jpg,image/webp"
+                      onChange={handleImageChange}
+                      disabled={isLoading}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+
+                <div className="lg:col-span-3 space-y-5">
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="itemName"
+                      className="text-sm font-semibold flex items-center gap-2"
+                    >
+                      <BadgeCheck className="w-4 h-4 text-primary" />
+                      Item Name
+                    </Label>
+
+                    <Input
+                      id="itemName"
+                      name="itemName"
+                      placeholder="e.g., Vintage Painting"
+                      value={formData.itemName}
+                      onChange={handleChange}
+                      disabled={isLoading}
+                      className="h-12 rounded-xl bg-muted/40 border-border"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="description"
+                      className="text-sm font-semibold flex items-center gap-2"
+                    >
+                      <FileText className="w-4 h-4 text-primary" />
+                      Description
+                    </Label>
+
+                    <textarea
+                      id="description"
+                      name="description"
+                      placeholder="Describe item quality, features, condition, authenticity, etc."
+                      value={formData.description}
+                      onChange={handleChange}
+                      disabled={isLoading}
+                      className="w-full min-h-28 rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm outline-none transition focus:border-primary resize-none"
+                    />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="condition"
+                        className="text-sm font-semibold flex items-center gap-2"
+                      >
+                        <BadgeCheck className="w-4 h-4 text-primary" />
+                        Condition
+                      </Label>
+
+                      <Input
+                        id="condition"
+                        name="condition"
+                        placeholder="e.g., New, Used, Excellent"
+                        value={formData.condition}
+                        onChange={handleChange}
+                        disabled={isLoading}
+                        className="h-12 rounded-xl bg-muted/40 border-border"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="startingPrice"
+                        className="text-sm font-semibold flex items-center gap-2"
+                      >
+                        <Coins className="w-4 h-4 text-primary" />
+                        Starting Price
+                      </Label>
+
+                      <div className="relative">
+                        <Input
+                          id="startingPrice"
+                          name="startingPrice"
+                          type="number"
+                          step="0.0001"
+                          placeholder="0.1"
+                          value={formData.startingPrice}
+                          onChange={handleChange}
+                          disabled={isLoading}
+                          className="h-12 rounded-xl bg-muted/40 border-border pr-14"
+                        />
+
+                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-muted-foreground">
+                          ETH
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="durationMinutes"
+                      className="text-sm font-semibold flex items-center gap-2"
+                    >
+                      <Timer className="w-4 h-4 text-primary" />
+                      Duration
+                    </Label>
+
+                    <div className="grid sm:grid-cols-4 gap-2 mb-2">
+                      {[
+                        { label: "1 Min", value: "1" },
+                        { label: "5 Min", value: "5" },
+                        { label: "1 Hour", value: "60" },
+                        { label: "1 Day", value: "1440" },
+                      ].map((option) => (
+                        <Button
+                          key={option.value}
+                          type="button"
+                          variant={
+                            formData.durationMinutes === option.value
+                              ? "default"
+                              : "outline"
+                          }
+                          onClick={() => setQuickDuration(option.value)}
+                          disabled={isLoading}
+                          className="rounded-xl"
+                        >
+                          {option.label}
+                        </Button>
+                      ))}
+                    </div>
+
+                    <Input
+                      id="durationMinutes"
+                      name="durationMinutes"
+                      type="number"
+                      min="1"
+                      placeholder="Or enter custom duration in minutes"
+                      value={formData.durationMinutes}
+                      onChange={handleChange}
+                      disabled={isLoading}
+                      className="h-12 rounded-xl bg-muted/40 border-border"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="flex-1 gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 py-6 text-base font-semibold hover:opacity-90"
+                >
+                  {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+                  {isLoading ? "Creating Auction..." : "Create Auction"}
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setIsOpen(false);
+                    resetForm();
+                  }}
+                  disabled={isLoading}
+                  className="flex-1 rounded-xl py-6 text-base"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </div>
         </Card>
       )}
     </div>
