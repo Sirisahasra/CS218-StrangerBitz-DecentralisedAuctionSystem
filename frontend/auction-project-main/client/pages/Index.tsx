@@ -14,7 +14,7 @@ import { CreateAuctionForm } from "@/components/CreateAuctionForm";
 import { AuctionCard } from "@/components/AuctionCard";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { RefreshCw, Sparkles } from "lucide-react";
+import { RefreshCw, Sparkles, ShieldCheck, UploadCloud, Gavel } from "lucide-react";
 
 type AuctionFilter = "all" | "active" | "ended";
 
@@ -116,15 +116,11 @@ export default function Index() {
   }, [provider, account, isCorrectNetwork, isLoading]);
 
   const activeAuctions = useMemo(() => {
-    return auctions.filter((auction) => {
-      return !auction.ended && auction.deadline > now;
-    });
+    return auctions.filter((auction) => !auction.ended && auction.deadline > now);
   }, [auctions, now]);
 
   const endedAuctions = useMemo(() => {
-    return auctions.filter((auction) => {
-      return auction.ended || auction.deadline <= now;
-    });
+    return auctions.filter((auction) => auction.ended || auction.deadline <= now);
   }, [auctions, now]);
 
   const filteredAuctions = useMemo(() => {
@@ -154,7 +150,7 @@ export default function Index() {
       const result = await placeBid(signer, auction.id, amount);
 
       if (result.success) {
-        toast.success("Bid placed");
+        toast.success("Bid placed successfully");
         await loadAuctions();
       } else {
         toast.error(result.error || "Failed to place bid");
@@ -203,7 +199,7 @@ export default function Index() {
       const result = await endAuction(signer, auction.id);
 
       if (result.success) {
-        toast.success("Auction ended");
+        toast.success("Auction ended successfully");
         await loadAuctions();
       } else {
         toast.error(result.error || "Failed to end auction");
@@ -220,22 +216,78 @@ export default function Index() {
       <Header />
 
       <main className="container mx-auto px-6 py-12">
-        <section className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full border bg-card">
+        <section className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 mb-5 px-5 py-2 rounded-full border bg-card shadow-sm">
             <Sparkles className="w-4 h-4 text-primary" />
-            Web3 Auction Marketplace
+            Secure Blockchain Auction Marketplace
           </div>
 
-          <h1 className="text-6xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Decentralized Auction System
+          <h1 className="text-7xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            BlockBid
           </h1>
+
+          <p className="mt-4 text-2xl font-semibold text-foreground">
+            Bid. Win. Own.
+          </p>
+
+          <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
+            A decentralized auction platform powered by Ethereum, Sepolia
+            Testnet and IPFS. Create auctions, place bids securely and track
+            ownership transparently on-chain.
+          </p>
+
+          <div className="flex justify-center gap-4 mt-8 flex-wrap">
+            <div className="bg-card border rounded-xl px-6 py-4 min-w-36 shadow-sm">
+              <p className="text-2xl font-bold">{auctions.length}</p>
+              <p className="text-sm text-muted-foreground">Total Auctions</p>
+            </div>
+
+            <div className="bg-card border rounded-xl px-6 py-4 min-w-36 shadow-sm">
+              <p className="text-2xl font-bold">{activeAuctions.length}</p>
+              <p className="text-sm text-muted-foreground">Active Auctions</p>
+            </div>
+
+            <div className="bg-card border rounded-xl px-6 py-4 min-w-36 shadow-sm">
+              <p className="text-2xl font-bold">{endedAuctions.length}</p>
+              <p className="text-sm text-muted-foreground">Ended Auctions</p>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-4 mt-10 max-w-5xl mx-auto text-left">
+            <div className="bg-card border rounded-2xl p-5 shadow-sm">
+              <UploadCloud className="w-6 h-6 text-primary mb-3" />
+              <h3 className="font-semibold text-lg">IPFS Item Storage</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Product images and metadata are uploaded to IPFS before auction
+                creation.
+              </p>
+            </div>
+
+            <div className="bg-card border rounded-2xl p-5 shadow-sm">
+              <Gavel className="w-6 h-6 text-primary mb-3" />
+              <h3 className="font-semibold text-lg">Transparent Bidding</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Every bid is recorded through smart contract transactions on
+                Sepolia.
+              </p>
+            </div>
+
+            <div className="bg-card border rounded-2xl p-5 shadow-sm">
+              <ShieldCheck className="w-6 h-6 text-primary mb-3" />
+              <h3 className="font-semibold text-lg">Secure Withdrawals</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Losing bidders can safely withdraw funds using the withdrawal
+                pattern.
+              </p>
+            </div>
+          </div>
         </section>
 
         <section className="mb-10">
-          <div className="flex justify-between items-center gap-4 bg-card p-4 rounded-xl border">
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-4 bg-card p-5 rounded-2xl border shadow-sm">
             <CreateAuctionForm onAuctionCreated={loadAuctions} />
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap justify-center">
               <Button
                 variant={filter === "all" ? "default" : "outline"}
                 onClick={() => setFilter("all")}
@@ -273,11 +325,17 @@ export default function Index() {
 
         <section>
           {filteredAuctions.length === 0 ? (
-            <p className="text-center text-muted-foreground">
-              No auctions available
-            </p>
+            <div className="text-center bg-card border rounded-2xl py-16 shadow-sm">
+              <Gavel className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
+              <p className="text-lg font-semibold text-foreground">
+                No auctions available
+              </p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Create the first auction and start bidding on BlockBid.
+              </p>
+            </div>
           ) : (
-            <div className="grid grid-cols-4 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredAuctions.map((auction) => {
                 const state = userStates[auction.id];
 
